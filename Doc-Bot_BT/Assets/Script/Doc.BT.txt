@@ -1,0 +1,69 @@
+//will stay idle untill a patient is present
+tree("Root")
+	//repeats when the behaviour ended
+	repeat
+		sequence
+			idle
+			fallback
+				sequence
+					//if the patient is fixed it will release other wise return fail and move to disposal tree
+					tree("Patient")
+					release
+				tree("Disposal")
+
+tree("Patient")
+	fallback
+		//check and fix virus
+		tree("Virus")
+		//check and fix broken part
+		tree("BrokenPart")
+
+tree("Virus")
+
+	sequence
+		moveToPatient
+
+		sequence
+			virus
+			//just for aesthetic
+			Wait 2.0
+			sequence
+				fallback
+					//if itself is infected
+					selfInfected
+					sequence
+						//check if the bot is fixed
+						fixSelf
+						//just for aesthetic
+						Wait 0.5
+			sequence
+				repairVirus
+				//just for aesthetic
+				Wait 1.0
+
+tree("BrokenPart")
+	sequence
+		checkStatus
+		sequence
+			goToStorage
+			fallback
+				//check for item and restock if there is not enough
+				checkItem
+				sequence
+					restockItem
+					//just for aesthetic
+					Wait 0.5
+			sequence
+				repair
+				//just for aesthetic
+				Wait 1.0
+
+tree("Disposal")
+	sequence
+		isBroken
+		sequence
+			recycle
+			//just for aesthetic
+			Wait 0.5
+		//dispose
+		dispose
